@@ -1,46 +1,84 @@
 ﻿using System;
 
-namespace PizzeríaBellaItalia.Dominio;
+namespace PizzeriaBellaItalia.Dominio;
 
 public class PedidoPizza
 {
-    // Propiedades auto-implementadas de Entidad ({ get; set; })
+    // Propiedades de la entidad del pedido
     public string Cliente { get; set; } = string.Empty;
     public string Telefono { get; set; } = string.Empty;
-    public string Tamano { get; set; } = "Mediana";
-    public string TipoMasa { get; set; } = "Tradicional";
+    public string TamanoNombre { get; set; } = string.Empty;
+    public int PrecioBaseTamano { get; set; }
+    public string MasaNombre { get; set; } = string.Empty;
+    public int RecargoMasa { get; set; }
 
-    // Adicionales
+    // Adicionales (Checkboxes)
     public bool QuesoExtra { get; set; }
     public bool Pepperoni { get; set; }
     public bool Champinones { get; set; }
     public bool Aceitunas { get; set; }
     public bool Tocino { get; set; }
 
-    // Opciones de Entrega y Beneficio
+    // Opciones de entrega y beneficio
     public bool EsDelivery { get; set; }
     public bool AplicaConvenioEstudiante { get; set; }
 
-    // Constantes de Precios de Negocio
-    private const double PRECIO_PERSONAL = 5000.0;
-    private const double PRECIO_MEDIANA = 8500.0;
-    private const double PRECIO_FAMILIAR = 12000.0;
-    private const double PRECIO_BORDE_QUESO = 1500.0;
-    private const double PRECIO_INGREDIENTE_EXTRA = 800.0;
-    private const double RECARGO_DELIVERY = 2000.0;
-    private const double TASA_DESCUENTO = 0.10; // 10%
-    private const double TASA_IVA = 0.19; // 19%
+    // Constantes de negocio
+    private const int PRECIO_INGREDIENTE_EXTRA = 800;
+    private const int RECARGO_DELIVERY = 2000;
+    private const double TASA_DESCUENTO = 0.10;
+    private const double TASA_IVA = 0.19;
 
-    // MÉTODOS PUROS DE CÁLCULO DE NEGOCIO (SRP)
-    //public double CalcularPrecioTamano();
-    //public double CalcularCostoMasa();
-    //public int ContarIngredientesExtra();
-    //public double CalcularCostoIngredientes();
-    //public double CalcularSubtotalPizza();
-    //public double CalcularMontoDescuento();
-    //public double CalcularCostoDelivery();
-    //public double CalcularNetoAfecto();
-    //public double CalcularMontoIva();
-    //public double CalcularTotalPagar()
+    // Métodos de cálculo en la Capa de Dominio
+    public int ContarIngredientesExtra()
+    {
+        int total = 0;
+        if (QuesoExtra) total++;
+        if (Pepperoni) total++;
+        if (Champinones) total++;
+        if (Aceitunas) total++;
+        if (Tocino) total++;
+        return total;
+    }
 
+    public int CalcularCostoIngredientes()
+    {
+        return ContarIngredientesExtra() * PRECIO_INGREDIENTE_EXTRA;
+    }
+
+    public int CalcularSubtotalPizza()
+    {
+        // Subtotal Base = Precio del Tamaño (SelectedValue) + Recargo de Masa (SelectedValue) + Ingredientes
+        return PrecioBaseTamano + RecargoMasa + CalcularCostoIngredientes();
+    }
+
+    public int CalcularMontoDescuento()
+    {
+        return AplicaConvenioEstudiante ? (int)(CalcularSubtotalPizza() * TASA_DESCUENTO) : 0;
+    }
+
+    public int CalcularCostoDelivery()
+    {
+        return EsDelivery ? RECARGO_DELIVERY : 0;
+    }
+
+    public int CalcularNetoAfecto()
+    {
+        return (CalcularSubtotalPizza() - CalcularMontoDescuento()) + CalcularCostoDelivery();
+    }
+
+    public int CalcularMontoIva()
+    {
+        return (int)(CalcularNetoAfecto() * TASA_IVA);
+    }
+
+    public int CalcularTotalPagar()
+    {
+        return CalcularNetoAfecto() + CalcularMontoIva();
+    }
+
+    public override string ToString()
+    {
+        return $"{Cliente} | {TamanoNombre} ({MasaNombre}) -> Total: $ {CalcularTotalPagar():N0} CLP";
+    }
 }
