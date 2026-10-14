@@ -2,15 +2,17 @@
 
 namespace PizzeriaBellaItalia.Dominio;
 
+
+
 public class PedidoPizza
 {
-    // Propiedades de la entidad del pedido
+    // Propiedades auto-implementadas de la entidad
     public string Cliente { get; set; } = string.Empty;
     public string Telefono { get; set; } = string.Empty;
-    public string TamanoNombre { get; set; } = string.Empty;
-    public int PrecioBaseTamano { get; set; }
-    public string MasaNombre { get; set; } = string.Empty;
-    public int RecargoMasa { get; set; }
+    public string TamanoNombre { get; set; } = "Mediana";
+    public int PrecioBaseTamano { get; set; } = 8500;
+    public string MasaNombre { get; set; } = "Masa Tradicional";
+    public int RecargoMasa { get; set; } = 0;
 
     // Adicionales (Checkboxes)
     public bool QuesoExtra { get; set; }
@@ -26,10 +28,67 @@ public class PedidoPizza
     // Constantes de negocio
     private const int PRECIO_INGREDIENTE_EXTRA = 800;
     private const int RECARGO_DELIVERY = 2000;
-    private const double TASA_DESCUENTO = 0.10;
-    private const double TASA_IVA = 0.19;
+    private const double TASA_DESCUENTO = 0.10; // 10%
+    private const double TASA_IVA = 0.19;        // 19% IVA chileno
 
-    // Métodos de cálculo en la Capa de Dominio
+    // --------------------------------------------------------------------
+    // CONSTRUCTORES SOBRECARGADOS (OVERLOADING)
+    // --------------------------------------------------------------------
+
+    /// <summary>
+    /// Constructor 1: Por defecto (sin parámetros).
+    /// Permite inicializar la entidad vacía o utilizar sintaxis de inicializadores de objetos.
+    /// </summary>
+    public PedidoPizza()
+    {
+    }
+
+    /// <summary>
+    /// Constructor 2: Esencial.
+    /// Recibe los datos obligatorios del cliente y las selecciones de tamaño y masa.
+    /// </summary>
+    public PedidoPizza(string cliente, string telefono, string tamanoNombre, int precioBaseTamano, string masaNombre, int recargoMasa)
+    {
+        Cliente = cliente;
+        Telefono = telefono;
+        TamanoNombre = tamanoNombre;
+        PrecioBaseTamano = precioBaseTamano;
+        MasaNombre = masaNombre;
+        RecargoMasa = recargoMasa;
+    }
+
+    /// <summary>
+    /// Constructor 3: Completo.
+    /// Inicializa absolutamente todas las propiedades de la pizza en una única instrucción.
+    /// </summary>
+    public PedidoPizza(
+        string cliente,
+        string telefono,
+        string tamanoNombre,
+        int precioBaseTamano,
+        string masaNombre,
+        int recargoMasa,
+        bool quesoExtra,
+        bool pepperoni,
+        bool champinones,
+        bool aceitunas,
+        bool tocino,
+        bool esDelivery,
+        bool aplicaConvenioEstudiante)
+        : this(cliente, telefono, tamanoNombre, precioBaseTamano, masaNombre, recargoMasa)
+    {
+        QuesoExtra = quesoExtra;
+        Pepperoni = pepperoni;
+        Champinones = champinones;
+        Aceitunas = aceitunas;
+        Tocino = tocino;
+        EsDelivery = esDelivery;
+        AplicaConvenioEstudiante = aplicaConvenioEstudiante;
+    }
+
+    // --------------------------------------------------------------------
+    // MÉTODOS DE CÁLCULO Y LÓGICA DE NEGOCIO
+    // --------------------------------------------------------------------
     public int ContarIngredientesExtra()
     {
         int total = 0;
@@ -48,7 +107,6 @@ public class PedidoPizza
 
     public int CalcularSubtotalPizza()
     {
-        // Subtotal Base = Precio del Tamaño (SelectedValue) + Recargo de Masa (SelectedValue) + Ingredientes
         return PrecioBaseTamano + RecargoMasa + CalcularCostoIngredientes();
     }
 
