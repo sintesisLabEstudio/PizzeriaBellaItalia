@@ -1,6 +1,6 @@
 ﻿namespace PizzeríaBellaItalia
 {
-    partial class Form1
+    partial class FormPedido
     {
         /// <summary>
         ///  Required designer variable.
