@@ -61,6 +61,7 @@
         btnCalcular = new Button();
         btnLimpiar = new Button();
         btnConfirmar = new Button();
+        lstResultados = new ListBox();
         grpCliente.SuspendLayout();
         grpPizza.SuspendLayout();
         grpIngredientes.SuspendLayout();
@@ -432,11 +433,20 @@
         btnConfirmar.UseVisualStyleBackColor = true;
         btnConfirmar.Click += btnSalir_Click;
         // 
+        // lstResultados
+        // 
+        lstResultados.FormattingEnabled = true;
+        lstResultados.Location = new Point(20, 470);
+        lstResultados.Name = "lstResultados";
+        lstResultados.Size = new Size(608, 94);
+        lstResultados.TabIndex = 14;
+        // 
         // FormPedido
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(641, 494);
+        ClientSize = new Size(641, 616);
+        Controls.Add(lstResultados);
         Controls.Add(btnConfirmar);
         Controls.Add(btnLimpiar);
         Controls.Add(btnCalcular);
@@ -499,4 +509,5 @@
         private Button btnCalcular;
         private Button btnLimpiar;
         private Button btnConfirmar;
-    }
+    private ListBox lstResultados;
+}
