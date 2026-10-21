@@ -23,7 +23,7 @@ public partial class FormPedido : Form
         // 1. Diccionario de Tamaños (Key: Nombre del Tamaño, Value: Precio Base)
         Dictionary<string, int> opcionesTamano = new Dictionary<string, int>
                 {
-                    {"Seleccione uno",0 },
+                    {"Seleccione uno",-1 },
                     { "Personal (1 Persona)", 5000 },
                     { "Mediana (2 a 3 Personas)", 8500 },
                     { "Familiar (4 a 5 Personas)", 12000 }
@@ -37,7 +37,7 @@ public partial class FormPedido : Form
         // 2. Diccionario de Masas (Key: Nombre del Tipo de Masa, Value: Recargo Adicional)
         Dictionary<string, int> opcionesMasa = new Dictionary<string, int>
                 {
-                    {"Seleccione uno",0 },
+                    {"Seleccione uno",-1 },
                     { "Masa Tradicional (Sin Recargo)", 0 },
                     { "Masa Delgada (Sin Recargo)", 0 },
                     { "Borde de Queso (+$1.500)", 1500 }
@@ -61,39 +61,22 @@ public partial class FormPedido : Form
         }
 
         // 2. Validar selecciones de ComboBox
-        if (cboTamano.SelectedValue == null || cboMasa.SelectedValue == null)
+        if (cboTamano.SelectedValue.Equals(-1) || cboMasa.SelectedValue.Equals(-1))
         {
             MessageBox.Show("Por favor, seleccione el tamaño y tipo de masa.",
                             "Validación de Datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
-
         // 3. Extraer nombres (Key) y valores (Value) desde los ComboBoxes enlazados
         string tamanoNombre = cboTamano.Text;
-        int precioBaseTamano = 0;
-        if (tamanoNombre.Equals("Seleccione uno"))
-        {
-            MessageBox.Show("Debe Seleccionar un tamaño", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            cboTamano.Focus();
-        }
-        else
-        {
-            precioBaseTamano = (int)cboTamano.SelectedValue;
-        }
-        
+        int precioBaseTamano = (int)cboTamano.SelectedValue;
 
         string masaNombre = cboMasa.Text;
-        int recargoMasa = 0;
+        int recargoMasa = (int)cboMasa.SelectedValue;
 
-        if (masaNombre.Equals("Seleccione uno"))
-        {
-            MessageBox.Show("Debe Seleccionar un tamaño", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            cboMasa.Focus();
-        }
-        else
-        {
-            recargoMasa = (int)cboMasa.SelectedValue;
-        }
+
+
+
         // 4. Instanciar el objeto de dominio y asignar valores
         PedidoPizza pedido = new PedidoPizza
         {

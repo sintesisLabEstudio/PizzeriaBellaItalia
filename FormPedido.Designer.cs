@@ -79,14 +79,14 @@
         grpCliente.Margin = new Padding(3, 2, 3, 2);
         grpCliente.Name = "grpCliente";
         grpCliente.Padding = new Padding(3, 2, 3, 2);
-        grpCliente.Size = new Size(270, 83);
+        grpCliente.Size = new Size(321, 83);
         grpCliente.TabIndex = 0;
         grpCliente.TabStop = false;
         grpCliente.Text = "Datos del Cliente";
         // 
         // txtTelefono
         // 
-        txtTelefono.Location = new Point(131, 42);
+        txtTelefono.Location = new Point(195, 40);
         txtTelefono.Margin = new Padding(3, 2, 3, 2);
         txtTelefono.Name = "txtTelefono";
         txtTelefono.Size = new Size(110, 23);
@@ -94,16 +94,16 @@
         // 
         // txtCliente
         // 
-        txtCliente.Location = new Point(5, 42);
+        txtCliente.Location = new Point(22, 39);
         txtCliente.Margin = new Padding(3, 2, 3, 2);
         txtCliente.Name = "txtCliente";
-        txtCliente.Size = new Size(110, 23);
+        txtCliente.Size = new Size(167, 23);
         txtCliente.TabIndex = 2;
         // 
         // lblTelefono
         // 
         lblTelefono.AutoSize = true;
-        lblTelefono.Location = new Point(131, 20);
+        lblTelefono.Location = new Point(196, 20);
         lblTelefono.Name = "lblTelefono";
         lblTelefono.Size = new Size(55, 15);
         lblTelefono.TabIndex = 1;
@@ -128,7 +128,7 @@
         grpPizza.Margin = new Padding(3, 2, 3, 2);
         grpPizza.Name = "grpPizza";
         grpPizza.Padding = new Padding(3, 2, 3, 2);
-        grpPizza.Size = new Size(270, 94);
+        grpPizza.Size = new Size(321, 94);
         grpPizza.TabIndex = 1;
         grpPizza.TabStop = false;
         grpPizza.Text = "Tamaño y Masa:";
@@ -139,7 +139,7 @@
         cboMasa.Location = new Point(71, 54);
         cboMasa.Margin = new Padding(3, 2, 3, 2);
         cboMasa.Name = "cboMasa";
-        cboMasa.Size = new Size(168, 23);
+        cboMasa.Size = new Size(234, 23);
         cboMasa.TabIndex = 4;
         // 
         // lblMasa
@@ -157,7 +157,7 @@
         cboTamano.Location = new Point(71, 28);
         cboTamano.Margin = new Padding(3, 2, 3, 2);
         cboTamano.Name = "cboTamano";
-        cboTamano.Size = new Size(170, 23);
+        cboTamano.Size = new Size(234, 23);
         cboTamano.TabIndex = 2;
         // 
         // lblTamano
@@ -292,7 +292,7 @@
         // lblSubtotalValor
         // 
         lblSubtotalValor.AutoSize = true;
-        lblSubtotalValor.Location = new Point(196, 26);
+        lblSubtotalValor.Location = new Point(223, 26);
         lblSubtotalValor.Name = "lblSubtotalValor";
         lblSubtotalValor.Size = new Size(43, 15);
         lblSubtotalValor.TabIndex = 5;
@@ -301,7 +301,7 @@
         // lblIvaValor
         // 
         lblIvaValor.AutoSize = true;
-        lblIvaValor.Location = new Point(195, 93);
+        lblIvaValor.Location = new Point(222, 93);
         lblIvaValor.Name = "lblIvaValor";
         lblIvaValor.Size = new Size(43, 15);
         lblIvaValor.TabIndex = 6;
@@ -310,7 +310,7 @@
         // lblTotalValor
         // 
         lblTotalValor.AutoSize = true;
-        lblTotalValor.Location = new Point(194, 122);
+        lblTotalValor.Location = new Point(221, 122);
         lblTotalValor.Name = "lblTotalValor";
         lblTotalValor.Size = new Size(43, 15);
         lblTotalValor.TabIndex = 7;
@@ -319,7 +319,7 @@
         // lblDeliveryValor
         // 
         lblDeliveryValor.AutoSize = true;
-        lblDeliveryValor.Location = new Point(196, 71);
+        lblDeliveryValor.Location = new Point(223, 71);
         lblDeliveryValor.Name = "lblDeliveryValor";
         lblDeliveryValor.Size = new Size(43, 15);
         lblDeliveryValor.TabIndex = 8;
@@ -328,7 +328,7 @@
         // lblDescuentoValor
         // 
         lblDescuentoValor.AutoSize = true;
-        lblDescuentoValor.Location = new Point(196, 47);
+        lblDescuentoValor.Location = new Point(223, 47);
         lblDescuentoValor.Name = "lblDescuentoValor";
         lblDescuentoValor.Size = new Size(43, 15);
         lblDescuentoValor.TabIndex = 9;
@@ -350,7 +350,7 @@
         grpResumen.Margin = new Padding(3, 2, 3, 2);
         grpResumen.Name = "grpResumen";
         grpResumen.Padding = new Padding(3, 2, 3, 2);
-        grpResumen.Size = new Size(272, 156);
+        grpResumen.Size = new Size(321, 156);
         grpResumen.TabIndex = 10;
         grpResumen.TabStop = false;
         grpResumen.Text = "Detalle de Pago";
