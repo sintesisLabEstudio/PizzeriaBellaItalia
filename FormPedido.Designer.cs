@@ -409,7 +409,7 @@
         btnCalcular.TabIndex = 11;
         btnCalcular.Text = "Calcular Total";
         btnCalcular.UseVisualStyleBackColor = true;
-        btnCalcular.Click += btnCalcular_Click;
+        btnCalcular.Click += BtnCalcular_Click;
         // 
         // btnLimpiar
         // 
@@ -420,7 +420,7 @@
         btnLimpiar.TabIndex = 12;
         btnLimpiar.Text = "Nuevo Pedido";
         btnLimpiar.UseVisualStyleBackColor = true;
-        btnLimpiar.Click += btnLimpiar_Click;
+        btnLimpiar.Click += BtnLimpiar_Click;
         // 
         // btnConfirmar
         // 
@@ -431,7 +431,7 @@
         btnConfirmar.TabIndex = 13;
         btnConfirmar.Text = "Salir";
         btnConfirmar.UseVisualStyleBackColor = true;
-        btnConfirmar.Click += btnSalir_Click;
+        btnConfirmar.Click += BtnSalir_Click;
         // 
         // lstResultados
         // 

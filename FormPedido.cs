@@ -1,117 +1,130 @@
-using PizzeriaBellaItalia.Dominio;
+using PizzeriaBellaItalia.Dominio;              //capa de dominio
 using System.Globalization;
-
-namespace PizzeriaBellaItalia.Presentacion;
+namespace PizzeriaBellaItalia.Presentacion;     //capa de presentacion
 
 public partial class FormPedido : Form
 {
+    //---------------------------------------------------------------------------------- INICIALIZACIONES
     public FormPedido()
     {
         InitializeComponent();
     }
+
     private void FormPedido_Load(object sender, EventArgs e)
     {
-        // Configurar cultura invariable para evitar errores de símbolos regionales
         CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
         PoblarComboBoxesConDiccionarios();
         LimpiarFormulario();
     }
 
-    private void PoblarComboBoxesConDiccionarios()
+    private readonly GestionPedidos gesPed = new(); 
+
+    //------------------------------------------------------------------------------------ BOTON CALCULAR
+    private void BtnCalcular_Click(object sender, EventArgs e)
     {
-        // 1. Diccionario de Tamaños (Key: Nombre del Tamaño, Value: Precio Base)
-        Dictionary<string, int> opcionesTamano = new Dictionary<string, int>
-                {
-                    {"Seleccione uno",-1 },
-                    { "Personal (1 Persona)", 5000 },
-                    { "Mediana (2 a 3 Personas)", 8500 },
-                    { "Familiar (4 a 5 Personas)", 12000 }
-                };
+        if (!ValidaInputs()) return;
 
-        cboTamano.DataSource = new BindingSource(opcionesTamano, null);
-        cboTamano.DisplayMember = "Key";    // Lo que el usuario VE en el desplegable
-        cboTamano.ValueMember = "Value";    // El VALOR numérico devuelto por SelectedValue
-        cboTamano.DropDownStyle = ComboBoxStyle.DropDownList;
-
-        // 2. Diccionario de Masas (Key: Nombre del Tipo de Masa, Value: Recargo Adicional)
-        Dictionary<string, int> opcionesMasa = new Dictionary<string, int>
-                {
-                    {"Seleccione uno",-1 },
-                    { "Masa Tradicional (Sin Recargo)", 0 },
-                    { "Masa Delgada (Sin Recargo)", 0 },
-                    { "Borde de Queso (+$1.500)", 1500 }
-                };
-
-        cboMasa.DataSource = new BindingSource(opcionesMasa, null);
-        cboMasa.DisplayMember = "Key";
-        cboMasa.ValueMember = "Value";
-        cboMasa.DropDownStyle = ComboBoxStyle.DropDownList;
-    }
-
-    private void btnCalcular_Click(object sender, EventArgs e)
-    {
-        // 1. Validar nombre del cliente
-        if (string.IsNullOrWhiteSpace(txtCliente.Text))
-        {
-            MessageBox.Show("Por favor, ingrese el nombre del cliente antes de calcular.",
-                            "Validación de Datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            txtCliente.Focus();
-            return;
-        }
-
-        // 2. Validar selecciones de ComboBox
-        if (cboTamano.SelectedValue.Equals(-1) || cboMasa.SelectedValue.Equals(-1))
-        {
-            MessageBox.Show("Por favor, seleccione el tamaño y tipo de masa.",
-                            "Validación de Datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
-        // 3. Extraer nombres (Key) y valores (Value) desde los ComboBoxes enlazados
-        string tamanoNombre = cboTamano.Text;
-        int precioBaseTamano = (int)cboTamano.SelectedValue;
-
-        string masaNombre = cboMasa.Text;
-        int recargoMasa = (int)cboMasa.SelectedValue;
-
-
-
-
-        // 4. Instanciar el objeto de dominio y asignar valores
-        PedidoPizza pedido = new PedidoPizza
+        // 1. Instanciar y poblar el objeto PedidoPizza con los datos del formulario
+        PedidoPizza pedido = new()
         {
             Cliente = txtCliente.Text.Trim(),
             Telefono = txtTelefono.Text.Trim(),
-            TamanoNombre = tamanoNombre,
-            PrecioBaseTamano = precioBaseTamano,
-            MasaNombre = masaNombre,
-            RecargoMasa = recargoMasa,
-
+            TamanoNombre = cboTamano.Text,
+            PrecioBaseTamano = Convert.ToInt32(cboTamano.SelectedValue),
+            MasaNombre = cboMasa.Text,
+            RecargoMasa = Convert.ToInt32(cboMasa.SelectedValue),
             QuesoExtra = chkQuesoExtra.Checked,
             Pepperoni = chkPepperoni.Checked,
             Champinones = chkChampinones.Checked,
             Aceitunas = chkAceitunas.Checked,
             Tocino = chkTocino.Checked,
-
             EsDelivery = rdbDelivery.Checked,
             AplicaConvenioEstudiante = chkConvenioEstudiante.Checked
         };
 
-        // 5. Presentar los desgloses en la interfaz
+        // 2. Presentar los desgloses calculados por el dominio en la interfaz
         lblSubtotalValor.Text = $"$ {pedido.CalcularSubtotalPizza():N0} CLP";
         lblDescuentoValor.Text = $"- $ {pedido.CalcularMontoDescuento():N0} CLP";
         lblDeliveryValor.Text = $"+ $ {pedido.CalcularCostoDelivery():N0} CLP";
         lblIvaValor.Text = $"+ $ {pedido.CalcularMontoIva():N0} CLP";
         lblTotalValor.Text = $"$ {pedido.CalcularTotalPagar():N0} CLP";
 
-        grpResumen.Enabled = true;
+        // 3. Registrar en el gestor y refrescar la lista
+        gesPed.AgregarPedido(pedido);
+        
+        lstResultados.DataSource = null;
+        lstResultados.DataSource = gesPed.pedidos; 
 
-        lstResultados.Items.Add(pedido);
+        grpResumen.Enabled = true;
     }
 
-    private void btnLimpiar_Click(object sender, EventArgs e)
+    //------------------------------------------------------------------------------------ OTROS BOTONES
+    private void BtnLimpiar_Click(object sender, EventArgs e)
     {
         LimpiarFormulario();
+    }
+
+    private void BtnSalir_Click(object sender, EventArgs e)
+    {
+        DialogResult respuesta = MessageBox.Show("¿Está seguro de que desea salir del sistema?",
+                                                 "Confirmar Salida",
+                                                 MessageBoxButtons.YesNo,
+                                                 MessageBoxIcon.Question);
+        if (respuesta == DialogResult.Yes)
+        {
+            this.Close();
+        }
+    }
+
+    //------------------------------------------------------------------------------------ METODOS DEL PROGRAMADOR
+    private void PoblarComboBoxesConDiccionarios()
+    {
+        Dictionary<string, int> opcionesTamano = new()
+        {
+            { "Seleccione uno", -1 },
+            { "Personal (1 Persona)", 5000 },
+            { "Mediana (2 a 3 Personas)", 8500 },
+            { "Familiar (4 a 5 Personas)", 12000 }
+        };
+
+        cboTamano.DataSource = new BindingSource { DataSource = opcionesTamano };
+        cboTamano.DisplayMember = "Key";    
+        cboTamano.ValueMember = "Value";    
+        cboTamano.DropDownStyle = ComboBoxStyle.DropDownList;
+
+        Dictionary<string, int> opcionesMasa = new()
+        {
+            { "Seleccione uno", -1 },
+            { "Masa Tradicional (Sin Recargo)", 0 },
+            { "Masa Delgada (Sin Recargo)", 0 },
+            { "Borde de Queso (+$1.500)", 1500 }
+        };
+
+        cboMasa.DataSource = new BindingSource { DataSource = opcionesMasa };
+        cboMasa.DisplayMember = "Key";
+        cboMasa.ValueMember = "Value";
+        cboMasa.DropDownStyle = ComboBoxStyle.DropDownList;
+    }
+
+    private bool ValidaInputs()
+    {
+        if (string.IsNullOrWhiteSpace(txtCliente.Text))
+        {
+            MessageBox.Show("Por favor, ingrese el nombre del cliente antes de calcular.",
+                            "Validación de Datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            txtCliente.Focus();
+            return false;
+        }
+
+        if (cboTamano.SelectedValue == null || Convert.ToInt32(cboTamano.SelectedValue) == -1 ||
+            cboMasa.SelectedValue == null || Convert.ToInt32(cboMasa.SelectedValue) == -1)
+        {
+            MessageBox.Show("Por favor, seleccione un tamaño y un tipo de masa válidos.",
+                            "Validación de Datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return false;
+        }
+        return true;
     }
 
     private void LimpiarFormulario()
@@ -137,21 +150,8 @@ public partial class FormPedido : Form
         lblIvaValor.Text = "$ 0 CLP";
         lblTotalValor.Text = "$ 0 CLP";
 
+        grpResumen.Enabled = false;
+
         txtCliente.Focus();
     }
-
-    private void btnSalir_Click(object sender, EventArgs e)
-    {
-        DialogResult respuesta = MessageBox.Show("¿Está seguro de que desea salir del sistema?",
-                                                 "Confirmar Salida",
-                                                 MessageBoxButtons.YesNo,
-                                                 MessageBoxIcon.Question);
-
-        if (respuesta == DialogResult.Yes)
-        {
-            this.Close();
-        }
-    }
 }
-
-
