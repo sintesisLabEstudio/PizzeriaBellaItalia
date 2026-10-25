@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Globalization;
+using System.Collections.Generic;
+
 namespace PizzeriaBellaItalia.Dominio;
 
 public class GestionPedidos
 {
-    //LISTA DE PEDIDOS
-    public List<PedidoPizza> pedidos = new List<PedidoPizza>(); //Instalacia clase con objeto PedidoPiza
+    // Lista global de pedidos en memoria
+    //public List<PedidoPizza> pedidos = new();
+    public List<PedidoPizza> pedidos = [];
 
-    //METODO
     public void AgregarPedido(PedidoPizza pedido)
     {
         pedidos.Add(pedido);
     }
-
 }

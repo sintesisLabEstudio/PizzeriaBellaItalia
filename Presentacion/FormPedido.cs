@@ -1,10 +1,15 @@
-using PizzeriaBellaItalia.Dominio;              //capa de dominio
+using System;
+using System.Collections.Generic;
 using System.Globalization;
-namespace PizzeriaBellaItalia.Presentacion;     //capa de presentacion
+using System.Windows.Forms;
+using PizzeriaBellaItalia.Dominio;
+
+namespace PizzeriaBellaItalia.Presentacion;
 
 public partial class FormPedido : Form
 {
-    //---------------------------------------------------------------------------------- INICIALIZACIONES
+    private readonly GestionPedidos gesPed = new();
+
     public FormPedido()
     {
         InitializeComponent();
@@ -18,14 +23,11 @@ public partial class FormPedido : Form
         LimpiarFormulario();
     }
 
-    private readonly GestionPedidos gesPed = new(); 
-
-    //------------------------------------------------------------------------------------ BOTON CALCULAR
+    // -------------------------------------------------------------------- BOTÓN CALCULAR
     private void BtnCalcular_Click(object sender, EventArgs e)
     {
         if (!ValidaInputs()) return;
 
-        // 1. Instanciar y poblar el objeto PedidoPizza con los datos del formulario
         PedidoPizza pedido = new()
         {
             Cliente = txtCliente.Text.Trim(),
@@ -43,23 +45,21 @@ public partial class FormPedido : Form
             AplicaConvenioEstudiante = chkConvenioEstudiante.Checked
         };
 
-        // 2. Presentar los desgloses calculados por el dominio en la interfaz
         lblSubtotalValor.Text = $"$ {pedido.CalcularSubtotalPizza():N0} CLP";
         lblDescuentoValor.Text = $"- $ {pedido.CalcularMontoDescuento():N0} CLP";
         lblDeliveryValor.Text = $"+ $ {pedido.CalcularCostoDelivery():N0} CLP";
         lblIvaValor.Text = $"+ $ {pedido.CalcularMontoIva():N0} CLP";
         lblTotalValor.Text = $"$ {pedido.CalcularTotalPagar():N0} CLP";
 
-        // 3. Registrar en el gestor y refrescar la lista
         gesPed.AgregarPedido(pedido);
-        
+
         lstResultados.DataSource = null;
-        lstResultados.DataSource = gesPed.pedidos; 
+        lstResultados.DataSource = gesPed.pedidos;
 
         grpResumen.Enabled = true;
     }
 
-    //------------------------------------------------------------------------------------ OTROS BOTONES
+    // -------------------------------------------------------------------- OTROS BOTONES
     private void BtnLimpiar_Click(object sender, EventArgs e)
     {
         LimpiarFormulario();
@@ -67,17 +67,20 @@ public partial class FormPedido : Form
 
     private void BtnSalir_Click(object sender, EventArgs e)
     {
-        DialogResult respuesta = MessageBox.Show("¿Está seguro de que desea salir del sistema?",
-                                                 "Confirmar Salida",
-                                                 MessageBoxButtons.YesNo,
-                                                 MessageBoxIcon.Question);
+        DialogResult respuesta = MessageBox.Show(
+            "¿Está seguro de que desea salir del sistema?",
+            "Confirmar Salida",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question
+        );
+
         if (respuesta == DialogResult.Yes)
         {
             this.Close();
         }
     }
 
-    //------------------------------------------------------------------------------------ METODOS DEL PROGRAMADOR
+    // -------------------------------------------------------------------- MÉTODOS AUXILIARES
     private void PoblarComboBoxesConDiccionarios()
     {
         Dictionary<string, int> opcionesTamano = new()
@@ -89,8 +92,8 @@ public partial class FormPedido : Form
         };
 
         cboTamano.DataSource = new BindingSource { DataSource = opcionesTamano };
-        cboTamano.DisplayMember = "Key";    
-        cboTamano.ValueMember = "Value";    
+        cboTamano.DisplayMember = "Key";
+        cboTamano.ValueMember = "Value";
         cboTamano.DropDownStyle = ComboBoxStyle.DropDownList;
 
         Dictionary<string, int> opcionesMasa = new()
@@ -111,8 +114,12 @@ public partial class FormPedido : Form
     {
         if (string.IsNullOrWhiteSpace(txtCliente.Text))
         {
-            MessageBox.Show("Por favor, ingrese el nombre del cliente antes de calcular.",
-                            "Validación de Datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show(
+                "Por favor, ingrese el nombre del cliente antes de calcular.",
+                "Validación de Datos",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning
+            );
             txtCliente.Focus();
             return false;
         }
@@ -120,8 +127,12 @@ public partial class FormPedido : Form
         if (cboTamano.SelectedValue == null || Convert.ToInt32(cboTamano.SelectedValue) == -1 ||
             cboMasa.SelectedValue == null || Convert.ToInt32(cboMasa.SelectedValue) == -1)
         {
-            MessageBox.Show("Por favor, seleccione un tamaño y un tipo de masa válidos.",
-                            "Validación de Datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show(
+                "Por favor, seleccione un tamaño y un tipo de masa válidos.",
+                "Validación de Datos",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning
+            );
             return false;
         }
         return true;
